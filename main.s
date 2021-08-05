@@ -68,7 +68,8 @@ loop:
     btfsc   RC3
     call    dec_B   //segundo ciclo
     
-    call    suma
+    btfsc   RC4
+    call    ver_suma
     goto    loop	;loop bezconechnasty
     
 
@@ -154,15 +155,23 @@ lim_B: //si se resta  1 cuando esta en 0 prende todos los bits
     
 reloj:
     banksel OSCCON
-    bsf	    IRCF2
-    bcf	    IRCF1
-    bcf	    IRCF0
+    bsf	    IRCF2   ;1
+    bcf	    IRCF1   ;0
+    bcf	    IRCF0   ;0
+    bsf	    SCS
     return
   
 suma:
     movf    PORTB, W ;mover PORTB a W
     addwf   PORTA, W ;la suma de A con B(esta en W) y se guarda en W
     movwf   PORTD   ; el resultado ponerlo en port D
+    return
+    
+ver_suma:
+    call    delay_small
+    btfsc   RC4	    
+    goto    $-1
+    call    suma
     return
     
 /*
